@@ -1,0 +1,26 @@
+# Get information about covid_joined_id table and show the first 5 entries
+\d covid_joined_id
+SELECT explorys_patient_id
+FROM covid_joined_id LIMIT 5;
+
+# retrieve all diagnoses for one patient
+\d v_diagnosis
+SELECT explorys_patient_id, icd_code, icd_version, diagnosis_date
+FROM v_diagnosis
+WHERE explorys_patient_id = xy
+AND diagnosis_date > '2019-12-01'
+UNION
+SELECT explorys_patient_id, icd_code, icd_version, diagnosis_date
+FROM v_diagnosis_new
+WHERE explorys_patient_id = xy
+AND diagnosis_date > '2019-12-01';
+
+# retrieve all drugs for one patient
+\d v_drug
+SELECT * FROM (SELECT explorys_patient_id, rx_cui, prescription_date, ingredient_descriptions
+FROM v_drug
+WHERE explorys_patient_id = xy
+UNION
+SELECT explorys_patient_id, rx_cui, prescription_date, ingredient_descriptions
+FROM v_drug_new
+WHERE explorys_patient_id = xy) foo ORDER BY prescription_date;
